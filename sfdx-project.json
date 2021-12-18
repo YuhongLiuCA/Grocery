@@ -1,0 +1,12 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    }
+  ],
+  "name": "Grocery",
+  "namespace": "",
+  "sfdcLoginUrl": "https://cunning-badger-6crpkt-dev-ed.my.salesforce.com/",
+  "sourceApiVersion": "52.0"
+}

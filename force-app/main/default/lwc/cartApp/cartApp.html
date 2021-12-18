@@ -1,0 +1,10 @@
+<template>
+    <h1 class="slds-text-heading_large">Products</h1>
+    <div class="slds-grid slds-wrap">      
+        <template if:true={displayProduct}>
+            <template for:each={groceryProducts} for:item="gproduct">
+                <c-product-item gproduct={gproduct} key={gproduct.name}></c-product-item>
+            </template>
+        </template>         
+    </div>
+</template>
