@@ -1,3 +1,31 @@
 img {
-    width: 80px;
+    width: 100px;
+    border-radius: 10px;
+    margin-bottom: 2px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.item_footer {
+    display: inline;
+    margin-left: auto;
+    margin-right: auto;
+}
+input {
+    width: 4em;
+}
+h3 {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 3px;
+}
+p {
+    text-align: center;
+}
+.item_button {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+.price_tag {
+    text-align: center;
 }
