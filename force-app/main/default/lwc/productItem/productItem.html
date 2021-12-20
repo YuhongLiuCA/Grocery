@@ -12,7 +12,8 @@
                 <!-- <lightning-input type="number" class="text_input" name="ItemNumber" label="qq" value={itemQuantity} onchange={handleQuantityChange} message-when-bad-input="We cannot meet your qunatity request."></lightning-input> -->
                 <input type="number" name="ItemNumber" value={itemQuantity} onchange={handleQuantityChange} />
                 <lightning-button variant="brand" label="-" title="Primary action" class="slds-m-left_x-small item_button" onclick={reduceProductItem}></lightning-button>
-            </div>            
+            </div>         
+            <lightning-button variant="success" label="Add to Cart" title="Successful action" onclick={addToCart} class="slds-m-left_x-small"></lightning-button>   
         </div>
     </lightning-card>     
 </template>

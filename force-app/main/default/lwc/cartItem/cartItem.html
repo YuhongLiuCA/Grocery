@@ -1,14 +1,19 @@
 <template>
     <lightning-card>
-        <h3 slot="title">
-            <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
-            Card Title
-        </h3>
-        <div slot="footer">
-                <lightning-badge label="Tag1"></lightning-badge>
-                <lightning-badge label="Tag2"></lightning-badge>
-                <lightning-badge label="Tag3"></lightning-badge>
+        <div class="slds-m-around_medium">
+            <h3 slot="title">                
+                {gcart.name}
+            </h3>
+            <div><img src={gcart.image}/></div>
+            <p><lightning-formatted-text value={gcart.description} ></lightning-formatted-text></p>
+            <div class="slds-text-heading_small slds-m-bottom_medium price_tag"><code>&#36;{gcart.price}</code></div>
+            <div slot="footer item_footer">                
+                <lightning-button variant="brand" label="+" title="Primary action" class="slds-m-left_x-small item_button" onclick={addProductItem}></lightning-button>
+                <!-- <lightning-input type="number" class="text_input" name="ItemNumber" label="qq" value={itemQuantity} onchange={handleQuantityChange} message-when-bad-input="We cannot meet your qunatity request."></lightning-input> -->
+                <input type="number" name="ItemNumber" value={itemQuantity} onchange={handleQuantityChange} />
+                <lightning-button variant="brand" label="-" title="Primary action" class="slds-m-left_x-small item_button" onclick={reduceProductItem}></lightning-button>
+            </div>         
+            <lightning-button variant="success" label="Add to Cart" title="Successful action" onclick={AddToCart} class="slds-m-left_x-small"></lightning-button>   
         </div>
-        <p class="slds-p-horizontal_small">Card Body (custom component)</p>
-    </lightning-card>    
+    </lightning-card>       
 </template>

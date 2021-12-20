@@ -1,4 +1,5 @@
 import { LightningElement, wire, api, track  } from 'lwc';
+import GetProducts from "@salesforce/apex/ProductController.GetProducts";
 
 export default class CartApp extends LightningElement {
     @track groceryProducts = [
@@ -8,6 +9,94 @@ export default class CartApp extends LightningElement {
     {name: "Orange",image:"https://images.unsplash.com/photo-1606050495266-ab4f2615cea5?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYzOTc4NzkzMQ&ixlib=rb-1.2.1&q=85",price:1.09,quantity:200,inc:"OrangeInc",dec:"OrangeDec",category:"OnSale",description:"One bag with 4 oranges"},
     {name: "Grape",image:'https://images.unsplash.com/photo-1599819177626-b50f9dd21c9b?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYzOTc4ODAxMg&ixlib=rb-1.2.1&q=85',price:3.99,quantity:700,inc:"GrapeInc",dec:"GrapeDec",category:"",description:"One pound grapes"}
     ];
-    @track cartItems;
+    @track cartItems = [];
     @track displayProduct = true;
+    addItem(event) {
+        console.log("Add to cart");
+        let n;
+        if(this.cartItems) {
+            n = this.cartItems.length;
+        } else {
+            n = 0;
+        }
+        let item = {
+            id: n,
+            name: event.detail.product.name,
+            price: event.detail.product.price,
+            category: event.detail.product.category,
+            description: event.detail.product.description,
+            quantity: event.detail.quantity
+        };
+        this.cartItems.push(item);
+        console.log(this.cartItems);
+        console.log(item);
+    }
+
+    retrieveProducts() {
+        // Call the method
+        GetProducts()
+          // Callback on a response
+          .then((result) => {
+            this.groceryProducts = result;
+          })
+          // Callback if there's an error
+          .catch((error) => {
+            this.error = error;
+          });
+      }
+
+    actions = [
+        //{ label: 'Show details', name: 'show_details' },
+        { label: 'Delete', name: 'delete' },
+    ];
+    cartColumns = [
+        { label: 'Number', fieldName: 'id', editable: false },
+        { label: 'Name', fieldName: 'name', type: 'text', editable: false },
+        { label: 'Price', fieldName: 'price', type: 'currency', editable: false },
+        { label: 'Quantity', fieldName: 'quantity', type: 'number', editable: true },
+        { label: 'category', fieldName: 'Category', type: 'text', editable: false },
+        { label: 'description', fieldName: 'description', type: 'text', editable: false },
+        {
+            type: 'action',
+            typeAttributes: { rowActions: this.actions },
+        }
+    ];
+    
+    rowOffset = 0;
+
+    handleRowAction(event) {
+        const actionName = event.detail.action.name;
+        const row = event.detail.row;
+        switch (actionName) {
+            case 'delete':
+                this.deleteRow(row);
+                break;
+            //case 'show_details':
+            //    this.showRowDetails(row);
+            //    break;
+            default:
+        }
+    }
+
+    deleteRow(row) {
+        const { id } = row;
+        const index = this.findRowIndexById(id);
+        if (index !== -1) {
+            this.cartItems = this.cartItems
+                .slice(0, index)
+                .concat(this.cartItems.slice(index + 1));
+        }
+    }
+
+    findRowIndexById(id) {
+        let ret = -1;
+        this.cartItems.some((row, index) => {
+            if (row.id === id) {
+                ret = index;
+                return true;
+            }
+            return false;
+        });
+        return ret;
+    }
 }

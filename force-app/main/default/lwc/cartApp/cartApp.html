@@ -2,9 +2,21 @@
     <h1 class="slds-text-heading_large">Products</h1>
     <div class="slds-grid slds-wrap">      
         <template if:true={displayProduct}>
-            <template for:each={groceryProducts} for:item="gproduct">
-                <c-product-item gproduct={gproduct} key={gproduct.name}></c-product-item>
+            <template for:each={groceryProducts} for:item="gproduct" >
+                <c-product-item gproduct={gproduct} key={gproduct.name} onadditem={addItem}></c-product-item>
             </template>
         </template>         
     </div>
+    <template if:true={displayProduct} >
+        <div style="height: 300px;">
+            <lightning-datatable
+                    key-field="id"
+                    data={cartItems}
+                    suppress-bottom-bar
+                    columns={cartColumns}
+                    onrowaction={handleRowAction}>
+
+            </lightning-datatable>
+        </div>        
+    </template>
 </template>
