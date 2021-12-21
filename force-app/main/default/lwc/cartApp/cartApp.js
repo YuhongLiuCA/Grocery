@@ -32,16 +32,36 @@ export default class CartApp extends LightningElement {
         console.log(item);
     }
 
+    @track products;
+
     retrieveProducts() {
         // Call the method
+        console.log("product start");
         GetProducts()
           // Callback on a response
           .then((result) => {
-            this.groceryProducts = result;
+            this.products = result;
+            console.log("Success");
+            console.log(this.products);
           })
           // Callback if there's an error
           .catch((error) => {
-            this.error = error;
+            console.log(error);
+          });
+      }
+
+      getProductItems(event) {
+        console.log("product start");
+        GetProducts()
+          // Callback on a response
+          .then((result) => {
+            this.products = result;
+            console.log("Success");
+            console.log(this.products);
+          })
+          // Callback if there's an error
+          .catch((error) => {
+            console.log(error);
           });
       }
 

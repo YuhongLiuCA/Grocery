@@ -7,6 +7,12 @@
             </template>
         </template>         
     </div>
+
+    <lightning-button variant="brand" label="Click to get products" title="Primary action" class="slds-m-left_x-small" onclick={getProductItems}></lightning-button>
+    <template if:true={products}>
+        <c-cart-item gcart={products}></c-cart-item>
+    </template>    
+
     <template if:true={displayProduct} >
         <div style="height: 300px;">
             <lightning-datatable

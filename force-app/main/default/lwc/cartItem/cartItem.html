@@ -1,19 +1,37 @@
 <template>
-    <lightning-card>
-        <div class="slds-m-around_medium">
-            <h3 slot="title">                
-                {gcart.name}
-            </h3>
-            <div><img src={gcart.image}/></div>
-            <p><lightning-formatted-text value={gcart.description} ></lightning-formatted-text></p>
-            <div class="slds-text-heading_small slds-m-bottom_medium price_tag"><code>&#36;{gcart.price}</code></div>
-            <div slot="footer item_footer">                
-                <lightning-button variant="brand" label="+" title="Primary action" class="slds-m-left_x-small item_button" onclick={addProductItem}></lightning-button>
-                <!-- <lightning-input type="number" class="text_input" name="ItemNumber" label="qq" value={itemQuantity} onchange={handleQuantityChange} message-when-bad-input="We cannot meet your qunatity request."></lightning-input> -->
-                <input type="number" name="ItemNumber" value={itemQuantity} onchange={handleQuantityChange} />
-                <lightning-button variant="brand" label="-" title="Primary action" class="slds-m-left_x-small item_button" onclick={reduceProductItem}></lightning-button>
-            </div>         
-            <lightning-button variant="success" label="Add to Cart" title="Successful action" onclick={AddToCart} class="slds-m-left_x-small"></lightning-button>   
-        </div>
-    </lightning-card>       
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-size_4-of-12" aria-labelledby="element-with-table-label other-element-with-table-label">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Opportunity Name">Item Name</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Account Name">Quantity</div>
+                </th>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Picture">Picture</div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template iterator:it={gcart}>
+                <tr class="slds-hint-parent" key={it.value.Name}>
+                    <th data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="Cloudhub">
+                            <a href="#" tabindex="-1">{it.value.Name}</a>
+                        </div>
+                    </th>
+                    <td data-label="Account Name">
+                        <div class="slds-truncate" title="Cloudhub">{it.value.Quantity__c}</div>
+                    </td>
+                    <td data-label="Picture">
+                        <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" tabindex="-1" title="More actions for Acme - 1,200 Widgets">
+                            <img src={it.value.Image__c} />
+                        </button>
+                        
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>    
 </template>

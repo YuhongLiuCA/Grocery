@@ -4,9 +4,9 @@ public with sharing class ProductController {
     }
 
     @AuraEnabled
-    public static List<Product> GetProducts() {
+    public static List<Product2> GetProducts() {
 
-        List<Product> allProducts = [SELECT name, ProductCode, Category__c, Image__c,Price__c, Description, Quantity__c FROM Product];
+        List<Product2> allProducts = [SELECT name, ProductCode, Category__c, Image__c,Price__c, Description, Quantity__c FROM Product2];
 
         return allProducts;
     }
