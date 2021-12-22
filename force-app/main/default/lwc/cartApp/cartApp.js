@@ -1,5 +1,6 @@
 import { LightningElement, wire, api, track  } from 'lwc';
 import GetProducts from "@salesforce/apex/ProductController.GetProducts";
+import GetAccountList from "@salesforce/apex/AccountController.GetAccountList"; 
 
 export default class CartApp extends LightningElement {
     @track groceryProducts = [
@@ -30,6 +31,30 @@ export default class CartApp extends LightningElement {
         this.cartItems.push(item);
         console.log(this.cartItems);
         console.log(item);
+    }
+
+    @track accountList = [];
+    @track optionList = [];
+    value = '';
+    connectedCallback() {
+        console.log("Account start");
+        GetAccountList().then(result => {
+            this.accountList = result;
+            console.log(result);
+            this.value = result.length;
+            for(let i = 0; i < result.length; i++) {
+                console.log("Name="+result[i].Name);
+                this.optionList.push({label: result[i].Name, value: result[i].Name});
+            }
+            console.log("Good");
+            console.log(this.optionList);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    handleAccountChange(e) {
+        this.value = e.detail.value;
     }
 
     @track products;

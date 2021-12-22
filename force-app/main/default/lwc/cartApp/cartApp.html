@@ -13,16 +13,13 @@
         <c-cart-item gcart={products}></c-cart-item>
     </template>    
 
-    <template if:true={displayProduct} >
-        <div style="height: 300px;">
-            <lightning-datatable
-                    key-field="id"
-                    data={cartItems}
-                    suppress-bottom-bar
-                    columns={cartColumns}
-                    onrowaction={handleRowAction}>
-
-            </lightning-datatable>
-        </div>        
-    </template>
+    <lightning-combobox
+               name="Account"
+               label="Account"
+               value={value}
+               placeholder="Select Account"
+               options={optionList}
+               onchange={handleAccountChange} >
+   </lightning-combobox>
+   <p>Selected value is: {value}</p>
 </template>
