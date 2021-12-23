@@ -1,4 +1,13 @@
-<template>
+<template>    
+    <lightning-combobox
+               name="Account"
+               label="Account"
+               value={value}
+               placeholder="Select Account"
+               options={optionList}
+               onchange={handleAccountChange} >
+   </lightning-combobox>
+
     <h1 class="slds-text-heading_large">Products</h1>
     <div class="slds-grid slds-wrap">      
         <template if:true={displayProduct}>
@@ -8,18 +17,8 @@
         </template>         
     </div>
 
-    <lightning-button variant="brand" label="Click to get products" title="Primary action" class="slds-m-left_x-small" onclick={getProductItems}></lightning-button>
-    <template if:true={products}>
-        <c-cart-item gcart={products}></c-cart-item>
+    <template if:true={cartItems}>
+        <c-cart-item gcart={cartItems}></c-cart-item>
     </template>    
 
-    <lightning-combobox
-               name="Account"
-               label="Account"
-               value={value}
-               placeholder="Select Account"
-               options={optionList}
-               onchange={handleAccountChange} >
-   </lightning-combobox>
-   <p>Selected value is: {value}</p>
 </template>
