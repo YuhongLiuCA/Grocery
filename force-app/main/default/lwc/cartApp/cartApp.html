@@ -12,13 +12,13 @@
     <div class="slds-grid slds-wrap">      
         <template if:true={displayProduct}>
             <template for:each={groceryProducts} for:item="gproduct" >
-                <c-product-item gproduct={gproduct} key={gproduct.name} onadditem={addItem}></c-product-item>
+                <c-product-item gproduct={gproduct} key={gproduct.Name} onadditem={addItem}></c-product-item>
             </template>
         </template>         
     </div>
 
     <template if:true={cartItems}>
-        <c-cart-item gcart={cartItems}></c-cart-item>
+        <c-cart-item gcart={cartItems} onplaceorder={placeOrder}></c-cart-item>
     </template>    
 
 </template>

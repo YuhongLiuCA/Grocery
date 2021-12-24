@@ -12,4 +12,15 @@ public with sharing class CartController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled
+    public static void SaveCartAndItems(Cart__c cart, List<Item> items){
+        try {
+            Upsert cart;
+            Upsert items;
+            
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
 }

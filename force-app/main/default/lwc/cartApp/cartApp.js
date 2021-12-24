@@ -6,6 +6,8 @@ export default class CartApp extends LightningElement {
     @track groceryProducts = [];
     @track cartItems = [];
     @track displayProduct = true;
+    @track cartRecord;
+    @track currentAccount;
     addItem(event) {
         //console.log("Add to cart");
         let n;
@@ -15,19 +17,22 @@ export default class CartApp extends LightningElement {
             n = 0;
         }
         let item = {
-            id: n,
+            id__c: n,
             Name: event.detail.product.Name,
             Price__c: event.detail.product.Price__c,
             Category__c: event.detail.product.Category__c,
-            Description: event.detail.product.Description,
-            Quantity__c: event.detail.product.Quantity__c,
-            volume: event.detail.quantity,
-            Image__c: event.detail.product.Image__c
+            Description__c: event.detail.product.Description,
+            Quantity__c: event.detail.quantity,
+            Image__c: event.detail.product.Image__c,
+            Product__c: event.detail.product.Id, 
+            Cart__c: 0
         };
         this.cartItems.push(item);
         //console.log(this.cartItems);
         console.log(item);
     }
+
+    placeOrder(event) {}
 
     @track accountList = [];
     @track optionList = [];
@@ -65,6 +70,20 @@ export default class CartApp extends LightningElement {
 
     handleAccountChange(e) {
         this.accountValue = e.detail.value;
+        let index = this.findAccountIndex(this.accountList, e.detail.value);
+        this.currentAccount = this.accountList[index];
+        console.log("Account change");
+        console.log(index);
+        console.log(this.accountValue);
     }  
+
+    findAccountIndex(accountList, name) {
+        if(accountList.length < 1) return -1;
+        for(let i = 0; i < accountList.length; i++) {
+            if(accountList[i].Name === name) return i;
+        }
+    }
+
+
     
 }
