@@ -34,6 +34,17 @@ export default class CartApp extends LightningElement {
 
     placeOrder(event) {}
 
+    //When User delete on item from Cart
+    handleDeleteItem(event) {
+        let v = event.detail;
+        for(let i = 0; i < this.cartItems.length; i++) {
+            if(this.cartItems[i].id__c == v) {
+                this.cartItems.splice(i,1);
+                break;
+            }
+        }
+    }
+
     @track accountList = [];
     @track optionList = [];
     accountValue = '';
