@@ -9,7 +9,6 @@ export default class CartApp extends LightningElement {
     @track cartRecord;
     @track currentAccount;
     addItem(event) {
-        //console.log("Add to cart");
         let n;
         if(this.cartItems) {
             n = this.cartItems.length;
@@ -25,11 +24,11 @@ export default class CartApp extends LightningElement {
             Quantity__c: event.detail.quantity,
             Image__c: event.detail.product.Image__c,
             Product__c: event.detail.product.Id, 
-            Cart__c: 0
+            Cart__c: 0,
+            ItemPrice: (event.detail.product.Price__c * event.detail.quantity).toFixed(2)
         };
-        this.cartItems.push(item);
-        //console.log(this.cartItems);
         console.log(item);
+        this.cartItems.push(item);
     }
 
     placeOrder(event) {}
@@ -42,6 +41,14 @@ export default class CartApp extends LightningElement {
                 this.cartItems.splice(i,1);
                 break;
             }
+        }
+    }
+
+    hanldeQuantityChange(event) {
+        let quantityChange = event.detail;
+        for(let i = 0; i < quantityChange.length;i++) {
+            this.cartItems[i].Quantity__c = quantityChange[i];
+            this.cartItems[i].ItemPrice = (this.cartItems[i].Quantity__c * this.cartItems[i].Price__c).toFixed(2);
         }
     }
 

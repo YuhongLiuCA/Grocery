@@ -18,7 +18,7 @@
     </div>
 
     <template if:true={cartItems}>
-        <c-cart-item gcart={cartItems} onplaceorder={placeOrder} ondeleteitem={handleDeleteItem}></c-cart-item>
+        <c-cart-item gcart={cartItems} onplaceorder={placeOrder} ondeleteitem={handleDeleteItem} onquantitychange={hanldeQuantityChange}></c-cart-item>
     </template>    
 
 </template>
