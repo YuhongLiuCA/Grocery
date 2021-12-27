@@ -28,6 +28,12 @@ export default class CartApp extends LightningElement {
             ItemPrice: (event.detail.product.Price__c * event.detail.quantity).toFixed(2)
         };
         console.log(item);
+        for(let i = 0; i < this.cartItems.length; i++) {
+            if(item.Name === this.cartItems[i].Name) {
+                this.cartItems[i].Quantity__c += item.Quantity__c;
+                return;
+            }
+        }
         this.cartItems.push(item);
     }
 

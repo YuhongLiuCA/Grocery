@@ -7,6 +7,8 @@ export default class ProductItem extends LightningElement {
     @track
     itemQuantity = 0;
 
+    displayNotification = true;
+
     addProductItem(event) {
         if(this.itemQuantity < this.gproduct.Quantity__c)
             this.itemQuantity++;
@@ -25,10 +27,29 @@ export default class ProductItem extends LightningElement {
     }
 
     addToCart(event) {
+        if(this.itemQuantity < 1) {
+            this.itemQuantity = 0;
+            let component = this.template.querySelector("input");
+            component.value = this.itemQuantity;
+            return;
+        }
         this.dispatchEvent(new CustomEvent('additem', {
             detail: {product: this.gproduct, quantity: this.itemQuantity},  
             bubbles: true
         }));
+        let component = this.template.querySelector("input");
+        let num = this.itemQuantity;
+        this.itemQuantity = 0;
+        component.value = this.itemQuantity;
+        this.displayNotification = false;
+        let textToDisplay = this.template.querySelector(".notificationText");
+        console.log(textToDisplay);
+        textToDisplay.value = "Here " + num + " " + this.gproduct.Name + " added into cart";
+        
+        
+        setTimeout(() => {
+            this.displayNotification = true;
+        }, 10000);
         console.log("add submitted");
     }
 }
