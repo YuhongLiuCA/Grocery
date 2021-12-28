@@ -4,9 +4,9 @@ public with sharing class CartController {
     }
 
     @AuraEnabled
-    public static List<Cart__c> getCarts(){
+    public static List<Cart__c> getCart(Integer order_num){
         try {
-            List<Cart__c> c = new List<Cart__c>();
+            List<Cart__c> c = [SELECT Name,Account__c,Quantity__c,Total_price__c FROM Cart__c WHERE Order_Number__c = :order_num];
             return c;            
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());

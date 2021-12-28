@@ -2,6 +2,8 @@ import { LightningElement, wire, api, track  } from 'lwc';
 import GetProducts from "@salesforce/apex/ProductController.GetProducts";
 import GetAccountList from "@salesforce/apex/AccountController.GetAccountList"; 
 import SaveCarts from "@salesforce/apex/CartController.SaveCarts"; 
+import getCart from '@salesforce/apex/CartController.getCart';
+import SaveItems from "@salesforce/apex/ItemController.SaveItems"; 
 
 export default class CartApp extends LightningElement {
     @track groceryProducts = [];
@@ -45,16 +47,47 @@ export default class CartApp extends LightningElement {
             itemQuantity += this.cartItems[i].Quantity__c;
             totalPrice += this.cartItems[i].Quantity__c * this.cartItems[i].Price__c;
         }
+        let orderNumber = 1;
+        //console.log(this.currentAccount);
+        //console.log(this.currentAccount.Carts__r);
+        if(this.currentAccount.Carts__r) {
+            orderNumber = this.currentAccount.Carts__r.length + 1;
+        }
         let newCart = {
             Account__c: this.currentAccount.Id,
-            Order_Number__c: 1,
+            Order_Number__c: orderNumber,
             Quantity__c: itemQuantity,
             Total_price__c: totalPrice
         };
-        console.log(newCart);
+        //console.log(newCart);
         let carts=[];
         carts.push(newCart);
-        SaveCarts({carts: carts});
+        SaveCarts({carts: carts}).then((result1 => {
+            console.log("write sucees"+orderNumber);
+            getCart({order_num: orderNumber}).then((result) => {
+                let id_cart = result[0].Id;
+                console.log("cart id=" + id_cart);
+                let newItems =[];
+                for(let i = 0; i < this.cartItems.length; i++) {
+                    this.cartItems[i].Cart__c = id_cart;
+                    let newItem = {
+                        id__c: this.cartItems[i].id__c,
+                        Name: this.cartItems[i].Name,
+                        ItemPrice__c: this.cartItems[i].Price__c,
+                        Quantity__c: this.cartItems[i].Quantity__c,
+                        Product__c: this.cartItems[i].Product__c, 
+                        Cart__c: this.cartItems[i].Cart__c
+                    };
+                    console.log(newItem);
+                    newItems.push(newItem);
+                }
+                SaveItems({newItems: newItems}).then(result2 => {
+                    console.log(result2);
+                }).catch(error => {console.log(error)});
+            }).catch(error => {console.log(error);})
+        })).catch(error => {
+            console.log(error);
+        });
     }
 
     //When User delete on item from Cart
