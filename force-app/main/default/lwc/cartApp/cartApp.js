@@ -42,8 +42,8 @@ export default class CartApp extends LightningElement {
         let itemQuantity = 0;
         let totalPrice = 0.0;
         for(let i = 0; i < this.cartItems.length; i++) {
-            itemQuantity += this.cartItems[i].itemQuantity;
-            totalPrice += this.cartItems[i].itemQuantity * this.cartItems[i].Price__c;
+            itemQuantity += this.cartItems[i].Quantity__c;
+            totalPrice += this.cartItems[i].Quantity__c * this.cartItems[i].Price__c;
         }
         let newCart = {
             Account__c: this.currentAccount.Id,
@@ -51,9 +51,10 @@ export default class CartApp extends LightningElement {
             Quantity__c: itemQuantity,
             Total_price__c: totalPrice
         };
+        console.log(newCart);
         let carts=[];
         carts.push(newCart);
-        SaveCarts(carts);
+        SaveCarts({carts: carts});
     }
 
     //When User delete on item from Cart
@@ -82,8 +83,9 @@ export default class CartApp extends LightningElement {
         console.log("Account start");
         GetAccountList().then(result => {
             this.accountList = result;
+            this.currentAccount = this.accountList[0];
             console.log(result);
-            this.value = result.length;
+            this.value = 0;
             let newOptions = [];
             for(let i = 0; i < result.length; i++) {
                 //console.log("Name="+result[i].Name);               
