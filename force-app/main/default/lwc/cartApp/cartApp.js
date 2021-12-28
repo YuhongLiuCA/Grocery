@@ -1,6 +1,7 @@
 import { LightningElement, wire, api, track  } from 'lwc';
 import GetProducts from "@salesforce/apex/ProductController.GetProducts";
 import GetAccountList from "@salesforce/apex/AccountController.GetAccountList"; 
+import SaveCarts from "@salesforce/apex/CartController.SaveCarts"; 
 
 export default class CartApp extends LightningElement {
     @track groceryProducts = [];
@@ -37,7 +38,23 @@ export default class CartApp extends LightningElement {
         this.cartItems.push(item);
     }
 
-    placeOrder(event) {}
+    placeOrder(event) {
+        let itemQuantity = 0;
+        let totalPrice = 0.0;
+        for(let i = 0; i < this.cartItems.length; i++) {
+            itemQuantity += this.cartItems[i].itemQuantity;
+            totalPrice += this.cartItems[i].itemQuantity * this.cartItems[i].Price__c;
+        }
+        let newCart = {
+            Account__c: this.currentAccount.Id,
+            Order_Number__c: 1,
+            Quantity__c: itemQuantity,
+            Total_price__c: totalPrice
+        };
+        let carts=[];
+        carts.push(newCart);
+        SaveCarts(carts);
+    }
 
     //When User delete on item from Cart
     handleDeleteItem(event) {
@@ -65,7 +82,7 @@ export default class CartApp extends LightningElement {
         console.log("Account start");
         GetAccountList().then(result => {
             this.accountList = result;
-            //console.log(result);
+            console.log(result);
             this.value = result.length;
             let newOptions = [];
             for(let i = 0; i < result.length; i++) {
@@ -74,7 +91,7 @@ export default class CartApp extends LightningElement {
             }
             this.optionList = newOptions;
             //console.log("Good");
-            //console.log(this.optionList);
+            console.log(this.accountList);
         }).catch((error) => {
             console.log(error);
         });
@@ -99,6 +116,7 @@ export default class CartApp extends LightningElement {
         console.log("Account change");
         console.log(index);
         console.log(this.accountValue);
+        console.log(this.currentAccount.Id);
     }  
 
     findAccountIndex(accountList, name) {
