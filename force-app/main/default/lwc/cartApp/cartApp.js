@@ -66,7 +66,7 @@ export default class CartApp extends LightningElement {
             console.log("write sucees"+orderNumber);
             getCart({order_num: orderNumber}).then((result) => {
                 let id_cart = result[0].Id;
-                console.log("cart id=" + id_cart);
+                console.log("len=" + result.length + " cart id=" + id_cart);
                 let newItems =[];
                 for(let i = 0; i < this.cartItems.length; i++) {
                     this.cartItems[i].Cart__c = id_cart;

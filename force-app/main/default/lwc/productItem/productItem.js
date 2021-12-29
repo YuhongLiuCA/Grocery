@@ -10,7 +10,7 @@ export default class ProductItem extends LightningElement {
     displayNotification = true;
 
     addProductItem(event) {
-        if(this.itemQuantity < this.gproduct.Quantity__c)
+        if(this.itemQuantity < this.gproduct.StockQuantity__c)
             this.itemQuantity++;
     }
 
@@ -21,7 +21,7 @@ export default class ProductItem extends LightningElement {
 
     handleQuantityChange(event) {
         let n = parseInt(event.target.value);
-        if(n <= this.gproduct.Quantity__c && n >= 0) {
+        if(n <= this.gproduct.StockQuantity__c && n >= 0) {
             this.itemQuantity = n;
         } 
     }
