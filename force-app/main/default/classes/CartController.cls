@@ -3,10 +3,11 @@ public with sharing class CartController {
 
     }
 
+    //Get the cart according to the parameter which is Order_Number__c field value
     @AuraEnabled
     public static List<Cart__c> getCart(Integer order_num){
         try {
-            List<Cart__c> c = [SELECT Name,Account__c,Quantity__c,Total_price__c FROM Cart__c WHERE Order_Number__c = :order_num];
+            List<Cart__c> c = [SELECT Name,Account__c,Quantity__c,Total_price__c,Order_Number__c FROM Cart__c WHERE Order_Number__c = :order_num];
             return c;            
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -25,8 +26,6 @@ public with sharing class CartController {
         }
         try {
             Upsert newCarts;       
-            //List<Database.SaveResult> dsrs = Database.Insert(newCarts, false);     
-            //system.debug(dsrs);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
