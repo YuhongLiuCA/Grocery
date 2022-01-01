@@ -1,7 +1,4 @@
 public with sharing class CartController {
-    public CartController() {
-
-    }
 
     //Get the cart according to the parameter which is Order_Number__c field value
     @AuraEnabled
@@ -30,4 +27,21 @@ public with sharing class CartController {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    public static void CheckAccount(List<Cart__c> carts){
+        List<Account> accountList = [SELECT Id FROM Account];
+        for(Cart__c cart : carts) {
+            if(GetIndexOfAccount(accountList, cart.Account__c) == false) {
+                cart.addError('Cart not valid.');
+            }
+        }
+    }
+
+    @testVisible private static Boolean GetIndexOfAccount(List<Account> accounts, Id id) {
+        for(Integer i = 0; i < accounts.size();i++) {
+            if(accounts[i].Id == id) return true;
+        }
+        return false;
+    }
+
 }
