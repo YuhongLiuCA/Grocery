@@ -29,7 +29,8 @@ public with sharing class CartController {
     }
 
     public static void CheckAccount(List<Cart__c> carts){
-        List<Account> accountList = [SELECT Id FROM Account];
+        List<Account> accountList = [SELECT Name, Id FROM Account];
+        System.debug(accountList);
         for(Cart__c cart : carts) {
             if(GetIndexOfAccount(accountList, cart.Account__c) == false) {
                 cart.addError('Cart not valid.');
