@@ -11,6 +11,8 @@ export default class CartApp extends LightningElement {
     @track displayProduct = true;
     @track cartRecord;
     @track currentAccount;
+
+    //Add item into cart handler
     addItem(event) {
         let n;
         if(this.cartItems) {
@@ -31,15 +33,20 @@ export default class CartApp extends LightningElement {
             ItemPrice: (event.detail.product.Price__c * event.detail.quantity).toFixed(2)
         };
         console.log(item);
+
+        //If item name already exists in Cart list, combine two items together
         for(let i = 0; i < this.cartItems.length; i++) {
             if(item.Name === this.cartItems[i].Name) {
                 this.cartItems[i].Quantity__c += item.Quantity__c;
                 return;
             }
         }
+
+        //If item is new, add item into cart
         this.cartItems.push(item);
     }
 
+    //Place order click event handler
     placeOrder(event) {
         let itemQuantity = 0;
         let totalPrice = 0.0;
@@ -48,8 +55,6 @@ export default class CartApp extends LightningElement {
             totalPrice += this.cartItems[i].Quantity__c * this.cartItems[i].Price__c;
         }
         let orderNumber = 1;
-        //console.log(this.currentAccount);
-        //console.log(this.currentAccount.Carts__r);
         if(this.currentAccount.Carts__r) {
             orderNumber = this.currentAccount.Carts__r.length + 1;
         }
