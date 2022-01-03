@@ -1,23 +1,32 @@
 <template>    
-    <lightning-combobox
+    
+    <!--Main App for order generation-->
+    <lightning-tabset active-tab-value="Product">
+        <lightning-tab label="Product" value="Product">
+            <lightning-combobox
+               class="AccountListSelection"
                name="Account"
                label="Account"
-               value={value}
+               value={accountValue}
                options={optionList}
                onchange={handleAccountChange} >
-   </lightning-combobox>
+            </lightning-combobox>
+                <h1 class="slds-text-heading_large">Products</h1>
+                <div class="slds-grid slds-wrap">      
+                <template if:true={displayProduct}>
+                    <template for:each={groceryProducts} for:item="gproduct" for:index="index">
+                        <c-product-item gproduct={gproduct} key={gproduct.Name} onadditem={addItem}></c-product-item>
+                    </template>
+                </template>         
+            </div>
+        </lightning-tab>
 
-    <h1 class="slds-text-heading_large">Products</h1>
-    <div class="slds-grid slds-wrap">      
-        <template if:true={displayProduct}>
-            <template for:each={groceryProducts} for:item="gproduct" for:index="index">
-                <c-product-item gproduct={gproduct} key={gproduct.Name} onadditem={addItem}></c-product-item>
-            </template>
-        </template>         
-    </div>
+        <lightning-tab label="Cart" value="Cart">
+            <template if:true={cartItems}>
+                <c-cart-item gcart={cartItems} onplaceorder={placeOrder} ondeleteitem={handleDeleteItem} onquantitychange={hanldeQuantityChange}></c-cart-item>
+            </template>  
+        </lightning-tab>
 
-    <template if:true={cartItems}>
-        <c-cart-item gcart={cartItems} onplaceorder={placeOrder} ondeleteitem={handleDeleteItem} onquantitychange={hanldeQuantityChange}></c-cart-item>
-    </template>    
+    </lightning-tabset>  
 
 </template>

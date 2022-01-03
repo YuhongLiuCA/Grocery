@@ -1,12 +1,18 @@
 {
-  "packageDirectories": [
-    {
-      "path": "force-app",
-      "default": true
+    "packageDirectories": [
+        {
+            "path": "force-app",
+            "default": true,
+            "package": "YLGrocery1",
+            "versionName": "ver 0.1",
+            "versionNumber": "0.1.0.NEXT"
+        }
+    ],
+    "name": "Grocery",
+    "namespace": "",
+    "sfdcLoginUrl": "https://resilient-narwhal-j4pkhd-dev-ed.my.salesforce.com/",
+    "sourceApiVersion": "52.0",
+    "packageAliases": {
+        "YLGrocery1": "0Ho5f000000Kz9ICAS"
     }
-  ],
-  "name": "Grocery",
-  "namespace": "",
-  "sfdcLoginUrl": "https://resilient-narwhal-j4pkhd-dev-ed.my.salesforce.com/",
-  "sourceApiVersion": "52.0"
 }

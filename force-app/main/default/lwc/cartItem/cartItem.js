@@ -5,8 +5,7 @@ export default class CartItem extends LightningElement {
     gcart=[];
 
     //User click "Place order" icon handler
-    placeOrder(event) {
-        
+    placeOrder(event) {        
         //Get all updated quantity number that user may change
         let newGcart = [];
         let inputAll = this.template.querySelectorAll("lightning-input");
@@ -46,6 +45,7 @@ export default class CartItem extends LightningElement {
         }));
     }
 
+    //Event handler for quantity change
     handleQuantityChange(event) {
         let v = event.detail.value;
         let component = event.target;

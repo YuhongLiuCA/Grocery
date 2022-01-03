@@ -11,6 +11,9 @@ export default class CartApp extends LightningElement {
     @track displayProduct = true;
     @track cartRecord;
     @track currentAccount;
+    @track accountList = [];
+    @track optionList = [];
+    accountValue = '';
 
     //Add item into cart handler
     addItem(event) {
@@ -32,7 +35,6 @@ export default class CartApp extends LightningElement {
             Cart__c: 0,
             ItemPrice: (event.detail.product.Price__c * event.detail.quantity).toFixed(2)
         };
-        console.log(item);
 
         //If item name already exists in Cart list, combine two items together
         for(let i = 0; i < this.cartItems.length; i++) {
@@ -42,7 +44,7 @@ export default class CartApp extends LightningElement {
             }
         }
 
-        //If item is new, add item into cart
+        //If item is new, add item into cart items
         this.cartItems.push(item);
     }
 
@@ -50,31 +52,38 @@ export default class CartApp extends LightningElement {
     placeOrder(event) {
         let itemQuantity = 0;
         let totalPrice = 0.0;
+
+        //Calculate total prcie and total qunatity in the cart
         for(let i = 0; i < this.cartItems.length; i++) {
             itemQuantity += this.cartItems[i].Quantity__c;
             totalPrice += this.cartItems[i].Quantity__c * this.cartItems[i].Price__c;
         }
+
+        //Set orderNumber, if have n items, then the order number is n+1
         let orderNumber = 1;
         if(this.currentAccount.Carts__r) {
             orderNumber = this.currentAccount.Carts__r.length + 1;
         }
+
+        //Set new cart object and save it into database
         let newCart = {
             Account__c: this.currentAccount.Id,
             Order_Number__c: orderNumber,
             Quantity__c: itemQuantity,
             Total_price__c: totalPrice
-        };
-        //console.log(newCart);
+        };        
         let carts=[];
         carts.push(newCart);
         SaveCarts({carts: carts}).then((result1 => {
-            console.log("write sucees"+orderNumber);
+            //Get new cart object Id after saving it
             getCart({order_num: orderNumber}).then((result) => {
                 let id_cart = result[0].Id;
-                console.log("len=" + result.length + " cart id=" + id_cart);
+                
                 let newItems =[];
+                //Save all items in the cart field Cart__c as new cart Id
                 for(let i = 0; i < this.cartItems.length; i++) {
                     this.cartItems[i].Cart__c = id_cart;
+                    //Set new Item object
                     let newItem = {
                         id__c: this.cartItems[i].id__c,
                         Name: this.cartItems[i].Name,
@@ -83,9 +92,10 @@ export default class CartApp extends LightningElement {
                         Product__c: this.cartItems[i].Product__c, 
                         Cart__c: this.cartItems[i].Cart__c
                     };
-                    console.log(newItem);
+                    //console.log(newItem);
                     newItems.push(newItem);
                 }
+                //Save new items into database
                 SaveItems({newItems: newItems}).then(result2 => {
                     console.log(result2);
                 }).catch(error => {console.log(error)});
@@ -106,6 +116,7 @@ export default class CartApp extends LightningElement {
         }
     }
 
+    //Event handle for user change item quantity in cart
     hanldeQuantityChange(event) {
         let quantityChange = event.detail;
         for(let i = 0; i < quantityChange.length;i++) {
@@ -114,22 +125,19 @@ export default class CartApp extends LightningElement {
         }
     }
 
-    @track accountList = [];
-    @track optionList = [];
-    accountValue = '';
+    //When component connected, load Account and Product data from Database
     connectedCallback() {
-        console.log("Account start");
+        //console.log("Account start");
         GetAccountList().then(result => {
             this.accountList = result;
             this.currentAccount = this.accountList[0];
             console.log(result);
-            this.value = 0;
             let newOptions = [];
-            for(let i = 0; i < result.length; i++) {
-                //console.log("Name="+result[i].Name);               
+            for(let i = 0; i < result.length; i++) {             
                 newOptions.push({label: result[i].Name, value: result[i].Name});                
             }
             this.optionList = newOptions;
+            this.accountValue = result[0].Name;
             //console.log("Good");
             console.log(this.accountList);
         }).catch((error) => {
@@ -140,32 +148,30 @@ export default class CartApp extends LightningElement {
           // Callback on a response
           .then((result) => {
             this.groceryProducts = result;
-            //console.log("Success");
-            //console.log(this.products);
           })
           // Callback if there's an error
           .catch((error) => {
             console.log(error);
-          });
+          });          
     }
 
+    //Event handle for user change acoount
     handleAccountChange(e) {
         this.accountValue = e.detail.value;
         let index = this.findAccountIndex(this.accountList, e.detail.value);
         this.currentAccount = this.accountList[index];
+        this.cartItems = [];
         console.log("Account change");
         console.log(index);
         console.log(this.accountValue);
         console.log(this.currentAccount.Id);
     }  
 
+    //Find account index with name input
     findAccountIndex(accountList, name) {
         if(accountList.length < 1) return -1;
         for(let i = 0; i < accountList.length; i++) {
             if(accountList[i].Name === name) return i;
         }
-    }
-
-
-    
+    }    
 }
