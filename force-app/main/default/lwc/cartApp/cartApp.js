@@ -9,7 +9,12 @@ export default class CartApp extends LightningElement {
     @track groceryProducts = [];
     @track cartItems = [];
     @track displayProduct = true;
-    @track cartRecord;
+    @track cartRecord ={
+        Account__c: '',
+        Order_Number__c: 0,
+        Quantity__c: 0,
+        Total_price__c: (0.0).toFixed(2)
+    };
     @track currentAccount;
     @track accountList = [];
     @track optionList = [];
@@ -46,10 +51,12 @@ export default class CartApp extends LightningElement {
 
         //If item is new, add item into cart items
         this.cartItems.push(item);
+
+        //Calculate new cart
+        this.calculateCartQuantity();
     }
 
-    //Place order click event handler
-    placeOrder(event) {
+    calculateCartQuantity() {
         let itemQuantity = 0;
         let totalPrice = 0.0;
 
@@ -58,22 +65,25 @@ export default class CartApp extends LightningElement {
             itemQuantity += this.cartItems[i].Quantity__c;
             totalPrice += this.cartItems[i].Quantity__c * this.cartItems[i].Price__c;
         }
+        this.cartRecord.Quantity__c = itemQuantity;
+        this.cartRecord.Total_price__c = totalPrice.toFixed(2);  
 
         //Set orderNumber, if have n items, then the order number is n+1
         let orderNumber = 1;
         if(this.currentAccount.Carts__r) {
             orderNumber = this.currentAccount.Carts__r.length + 1;
         }
+        this.cartRecord.Order_Number__c = orderNumber;
+    }
 
-        //Set new cart object and save it into database
-        let newCart = {
-            Account__c: this.currentAccount.Id,
-            Order_Number__c: orderNumber,
-            Quantity__c: itemQuantity,
-            Total_price__c: totalPrice
-        };        
+    //Place order click event handler
+    placeOrder(event) {
+
+        //Calculate new cart
+        this.calculateCartQuantity();     
+     
         let carts=[];
-        carts.push(newCart);
+        carts.push(this.cartRecord);
         SaveCarts({carts: carts}).then((result1 => {
             //Get new cart object Id after saving it
             getCart({order_num: orderNumber}).then((result) => {
@@ -114,6 +124,8 @@ export default class CartApp extends LightningElement {
                 break;
             }
         }
+        //Calculate new cart
+        this.calculateCartQuantity();
     }
 
     //Event handle for user change item quantity in cart
@@ -123,6 +135,14 @@ export default class CartApp extends LightningElement {
             this.cartItems[i].Quantity__c = quantityChange[i];
             this.cartItems[i].ItemPrice = (this.cartItems[i].Quantity__c * this.cartItems[i].Price__c).toFixed(2);
         }
+        //Calculate new cart
+        this.calculateCartQuantity();
+    }
+
+    //Handler for use click cart icon
+    handleProductCartChange(event) {
+        let component = event.target;
+        this.template.querySelector('lightning-tabset').activeTabValue = "Cart";
     }
 
     //When component connected, load Account and Product data from Database
@@ -138,6 +158,7 @@ export default class CartApp extends LightningElement {
             }
             this.optionList = newOptions;
             this.accountValue = result[0].Name;
+            this.cartRecord.Account__c = this.currentAccount.Id;
             //console.log("Good");
             console.log(this.accountList);
         }).catch((error) => {
