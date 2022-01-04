@@ -31,3 +31,9 @@
 .tab-set-all {
     background-color: white;
 }
+
+.cartNotificationText {
+    font-weight: bold;
+    font-size: 2rem;
+    color: green;
+}

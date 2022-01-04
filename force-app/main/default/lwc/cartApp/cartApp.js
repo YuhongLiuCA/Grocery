@@ -19,6 +19,7 @@ export default class CartApp extends LightningElement {
     @track accountList = [];
     @track optionList = [];
     accountValue = '';
+    displayNotification = true;
 
     //Add item into cart handler
     addItem(event) {
@@ -84,6 +85,7 @@ export default class CartApp extends LightningElement {
      
         let carts=[];
         carts.push(this.cartRecord);
+        let orderNumber = this.cartRecord.Order_Number__c;
         SaveCarts({carts: carts}).then((result1 => {
             //Get new cart object Id after saving it
             getCart({order_num: orderNumber}).then((result) => {
@@ -102,12 +104,36 @@ export default class CartApp extends LightningElement {
                         Product__c: this.cartItems[i].Product__c, 
                         Cart__c: this.cartItems[i].Cart__c
                     };
-                    //console.log(newItem);
+                    console.log(newItem);
                     newItems.push(newItem);
                 }
                 //Save new items into database
                 SaveItems({newItems: newItems}).then(result2 => {
-                    console.log(result2);
+                    //Add notification text into the cart tab
+                    this.displayNotification = false;
+                    let textToDisplay = this.template.querySelector(".cartNotificationText");
+                    console.log(textToDisplay);
+                    textToDisplay.value = "Order placed, total " + this.cartRecord.Quantity__c + "items, total cost is $" + this.cartRecord.Total_price__c;
+        
+                    //The notification text dsiplay 10 seconds 
+                    setTimeout(() => {
+                        this.displayNotification = true;
+                    }, 10000);
+                    this.cartItems = [];
+                    console.log("Good0");
+                    if(!this.currentAccount.Carts__r) {
+                        this.currentAccount.Carts__r = [];
+                    }
+                    this.currentAccount.Carts__r.push(this.cartRecord);
+                    let index = this.findAccountIndex(this.accountList, this.currentAccount.Name);
+                    console.log("Good1 "+index);
+                    if(!this.accountList[index].Carts__r) {
+                        this.accountList[index].Carts__r = [];
+                    }
+                    this.accountList[index].Carts__r.push(this.cartRecord);
+                    console.log("Good2");
+                    this.calculateCartQuantity();
+                    console.log(this.cartRecord);
                 }).catch(error => {console.log(error)});
             }).catch(error => {console.log(error);})
         })).catch(error => {
@@ -182,6 +208,16 @@ export default class CartApp extends LightningElement {
         let index = this.findAccountIndex(this.accountList, e.detail.value);
         this.currentAccount = this.accountList[index];
         this.cartItems = [];
+
+        this.cartRecord.Account__c = this.currentAccount.Id;
+        this.cartRecord.Quantity__c = 0;
+        this.cartRecord.Total_price__c = (0.0).toFixed(2);  
+        let orderNumber = 1;
+        if(this.currentAccount.Carts__r) {
+            orderNumber = this.currentAccount.Carts__r.length + 1;
+        }
+        this.cartRecord.Order_Number__c = orderNumber;
+
         console.log("Account change");
         console.log(index);
         console.log(this.accountValue);
