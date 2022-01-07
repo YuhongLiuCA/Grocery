@@ -1,6 +1,6 @@
-# Salesforce DX Project: Next Steps
+# Salesforce Grocery Project: Online cart generation and stock update after order generation
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+This project includes both Front End and Back End, front end use LWC, back end with Salesforce database with custom objects and custom fields on standard objects.
 
 ## How Do You Plan to Deploy Your Changes?
 
