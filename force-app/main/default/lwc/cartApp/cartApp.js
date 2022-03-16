@@ -5,7 +5,7 @@ import SaveCarts from "@salesforce/apex/CartController.SaveCarts";
 import getCart from '@salesforce/apex/CartController.getCart';
 import SaveItems from "@salesforce/apex/ItemController.SaveItems"; 
 import My_Resource from '@salesforce/resourceUrl/myResource';
-import Grape from '@salesforce/resourceUrl/myResource';
+import SaveAccountList from '@salesforce/apex/AccountController.SaveAccountList';
 
 export default class CartApp extends LightningElement {
     @track groceryProducts = [];
@@ -106,7 +106,6 @@ export default class CartApp extends LightningElement {
                         Product__c: this.cartItems[i].Product__c, 
                         Cart__c: this.cartItems[i].Cart__c
                     };
-                    console.log(newItem);
                     newItems.push(newItem);
                 }
                 //Save new items into database
@@ -122,20 +121,16 @@ export default class CartApp extends LightningElement {
                         this.displayNotification = true;
                     }, 10000);
                     this.cartItems = [];
-                    console.log("Good0");
                     if(!this.currentAccount.Carts__r) {
                         this.currentAccount.Carts__r = [];
                     }
                     this.currentAccount.Carts__r.push(this.cartRecord);
                     let index = this.findAccountIndex(this.accountList, this.currentAccount.Name);
-                    console.log("Good1 "+index);
                     if(!this.accountList[index].Carts__r) {
                         this.accountList[index].Carts__r = [];
                     }
                     this.accountList[index].Carts__r.push(this.cartRecord);
-                    console.log("Good2");
                     this.calculateCartQuantity();
-                    console.log(this.cartRecord);
                 }).catch(error => {console.log(error)});
             }).catch(error => {console.log(error);})
         })).catch(error => {
@@ -175,11 +170,9 @@ export default class CartApp extends LightningElement {
 
     //When component connected, load Account and Product data from Database
     connectedCallback() {
-        //console.log("Account start");
         GetAccountList().then(result => {
             this.accountList = result;
             this.currentAccount = this.accountList[0];
-            console.log(result);
             let newOptions = [];
             for(let i = 0; i < result.length; i++) {             
                 newOptions.push({label: result[i].Name, value: result[i].Name});                
@@ -187,8 +180,6 @@ export default class CartApp extends LightningElement {
             this.optionList = newOptions;
             this.accountValue = result[0].Name;
             this.cartRecord.Account__c = this.currentAccount.Id;
-            //console.log("Good");
-            console.log(this.accountList);
         }).catch((error) => {
             console.log(error);
         });
@@ -197,18 +188,43 @@ export default class CartApp extends LightningElement {
           // Callback on a response
           .then((result) => {
             this.groceryProducts = [...result];
-            console.log(result);
-            console.log(this.groceryProducts);
             for(let i=0; i < this.groceryProducts.length; i++) {
                 this.groceryProducts[i].Image__c = My_Resource + this.groceryProducts[i].Image__c;
                 //product.Image__c = Grape;
             }
-            console.log(this.groceryProducts);
           })
           // Callback if there's an error
           .catch((error) => {
             console.log(error);
           });          
+    }
+
+    //Constructor, set default account if no accounts
+    constructor() {
+        super();
+        let newAccounts =[{Name: "John Smith", Active__c: "Yes"}, {Name: "Tom Cat", Active__c: "Yes"}];
+        GetAccountList().then(result => {
+            this.accountList = result;
+            if(result.length === 0) {
+                SaveAccountList({accounts: newAccounts});
+                //Set timer to load accounts again after 300ms
+                setTimeout(() => {
+                    GetAccountList().then(result => {
+                        this.accountList = result;
+                        this.currentAccount = this.accountList[0];
+                        let newOptions = [];
+                        for(let i = 0; i < result.length; i++) {             
+                            newOptions.push({label: result[i].Name, value: result[i].Name});                
+                        }
+                        this.optionList = newOptions;
+                        this.accountValue = result[0].Name;
+                        this.cartRecord.Account__c = this.currentAccount.Id;
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }, 300);
+            }
+        }).catch(error => console.log(error));
     }
 
     //Event handle for user change acoount
@@ -226,11 +242,6 @@ export default class CartApp extends LightningElement {
             orderNumber = this.currentAccount.Carts__r.length + 1;
         }
         this.cartRecord.Order_Number__c = orderNumber;
-
-        console.log("Account change");
-        console.log(index);
-        console.log(this.accountValue);
-        console.log(this.currentAccount.Id);
     }  
 
     //Find account index with name input

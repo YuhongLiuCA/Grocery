@@ -1,4 +1,4 @@
-public with sharing class AccountController {
+public without sharing class AccountController {
     public AccountController() {
 
     }
@@ -10,5 +10,10 @@ public with sharing class AccountController {
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
+    }
+
+    @AuraEnabled
+    public static void SaveAccountList(List<Account> accounts){
+        insert accounts;
     }
 }
