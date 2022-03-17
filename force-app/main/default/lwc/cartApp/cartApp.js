@@ -83,7 +83,9 @@ export default class CartApp extends LightningElement {
     placeOrder(event) {
 
         //Calculate new cart
-        this.calculateCartQuantity();     
+        this.calculateCartQuantity();    
+        console.log("cart detail");
+        console.log(JSON.stringify(event.detail)); 
      
         let carts=[];
         carts.push(this.cartRecord);
@@ -113,7 +115,6 @@ export default class CartApp extends LightningElement {
                     //Add notification text into the cart tab
                     this.displayNotification = false;
                     let textToDisplay = this.template.querySelector(".cartNotificationText");
-                    console.log(textToDisplay);
                     textToDisplay.value = "Order placed, total " + this.cartRecord.Quantity__c + "items, total cost is $" + this.cartRecord.Total_price__c;
         
                     //The notification text dsiplay 10 seconds 
@@ -131,8 +132,12 @@ export default class CartApp extends LightningElement {
                     }
                     this.accountList[index].Carts__r.push(this.cartRecord);
                     this.calculateCartQuantity();
-                }).catch(error => {console.log(error)});
-            }).catch(error => {console.log(error);})
+                }).catch(error => {
+                    console.log(error);       
+                });
+            }).catch(error => {
+                console.log(error);
+            })
         })).catch(error => {
             console.log(error);
         });

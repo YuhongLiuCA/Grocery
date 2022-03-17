@@ -1,4 +1,4 @@
-public with sharing class CartController {
+public without sharing class CartController {
 
     //Get the cart according to the parameter which is Order_Number__c field value
     @AuraEnabled

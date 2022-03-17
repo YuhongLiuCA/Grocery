@@ -1,4 +1,4 @@
-public with sharing class ItemController {
+public without sharing class ItemController {
     public ItemController() {
 
     }
@@ -16,7 +16,7 @@ public with sharing class ItemController {
                 productList[i].StockQuantity__c -= newItems[index].Quantity__c; 
             }
         }
-        Update productList;
+        //Update productList;
     }
 
     //Search index of product id from the list of items
@@ -32,7 +32,7 @@ public with sharing class ItemController {
     @AuraEnabled
     public static void SaveItems(List<Item__c> newItems){
         try {
-            List<Item__c> cartItems = new List<Item__c>();
+            /*List<Item__c> cartItems = new List<Item__c>();
             for(Integer i = 0; i < newItems.size(); i++) {
                 Item__c newItem = new Item__c(
                     id__c = newItems[i].id__c,
@@ -43,8 +43,8 @@ public with sharing class ItemController {
                     Cart__c = newItems[i].Cart__c
                 );
                 cartItems.add(newItem);
-            }  
-            Insert cartItems;          
+            }  */
+            Insert newItems;      
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }

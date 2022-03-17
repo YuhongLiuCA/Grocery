@@ -62,6 +62,5 @@ export default class ProductItem extends LightningElement {
         setTimeout(() => {
             this.displayNotification = true;
         }, 10000);
-        console.log("add submitted");
     }
 }

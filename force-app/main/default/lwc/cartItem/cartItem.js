@@ -4,14 +4,15 @@ export default class CartItem extends LightningElement {
     @api
     gcart=[];
 
+    newGcart = [];
+
     //User click "Place order" icon handler
     placeOrder(event) {        
         //Get all updated quantity number that user may change
-        let newGcart = [];
+        
         let inputAll = this.template.querySelectorAll("lightning-input");
-        for(let i = 0; i < inputAll.length; i++){
-            console.log("All input="+inputAll[i].value);
-      
+        console.log("length= " + inputAll.length);
+        for(let i = 0; i < inputAll.length; i++){      
             let newCartItem = {
             id__c: this.gcart[i].id__c,
             Name: this.gcart[i].Name,
@@ -24,14 +25,15 @@ export default class CartItem extends LightningElement {
             Cart__c: this.gcart[i].Cart__c
             };
 
-            newGcart.push(newCartItem);
+            this.newGcart.push(newCartItem);
         }
         
         //Generate custom event for order generation
         this.dispatchEvent(new CustomEvent('placeorder', {
-            detail: newGcart,  
+            detail: this.newGcart,  
             bubbles: true
         }));
+        this.newGcart = [];
     }
 
     //User click item "Delete" icon handle, delete on item from cart
